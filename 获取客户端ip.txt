@@ -1,0 +1,6 @@
+	//客户端的IP地址
+        $exter_invoke_ip = get_client_ip(0, TRUE);
+        //非局域网的外网IP地址，如：221.0.0.1
+
+
+TP框架

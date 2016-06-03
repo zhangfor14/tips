@@ -1,0 +1,3 @@
+$decor=md5(substr($pw,0,6));//ÃÜÂë×îÉÙ6Î»
+        $salt = substr($decor,0,12).$pw;
+        return md5($salt);

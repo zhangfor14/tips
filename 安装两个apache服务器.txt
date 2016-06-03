@@ -1,0 +1,5 @@
+httpd -k install -n apache1 　／＊安装好了apache1的服务＊／
+httpd -k install -n apache2 　／＊安装好了apache2的服务＊／
+
+httpd -k uninstall -n apache1  ／＊删除了apache1的服务＊／
+httpd -k uninstall -n apache2  ／＊删除了apache2的服务＊／

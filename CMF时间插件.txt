@@ -1,0 +1,3 @@
+class="input length_3 J_datetime"
+
+<script type="text/javascript" src="__ROOT__/statics/js/common.js"></script>

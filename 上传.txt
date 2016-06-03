@@ -1,0 +1,30 @@
+	    /**
+             * 图片上传
+             * @param  [type] $id [description]
+             * @return [type]     [description]
+             */
+            if(isset($_FILES['images']) && $_FILES['images']['error']==0){ 
+                /**
+                 * 初始化upload类
+                 * @var array
+                 */
+                $upload_config=array(
+                        'exts'          =>  array('jpg','jpeg','png','gif'),
+                        'rootPath'      =>  './data/upload/Admin/', 
+                        'savePath'      =>  'channel_content/', 
+                    );
+                $upload=new \Think\Upload($upload_config);
+                $info=$upload->uploadOne($_FILES['images']);  
+                if($info){
+                    /**
+                     * 拼接图片保存名称
+                     */
+                    $data['images']= $info['savepath'].$info['savename'];
+                }else{
+                    /**
+                     * 获取失败原因，并传至模型中，返回控制器，
+                     * @var [type]
+                     */
+                    $this->error("图片上传失败！");
+                }
+            }

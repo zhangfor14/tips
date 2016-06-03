@@ -1,0 +1,5 @@
+ThinkPHP:
+1.打印变量:	dump();
+2.调试执行的SQL语句:	$User->_sql();
+3.获取全局的最后sql记录:	M()->getLastSql();
+4.获取数据库错误信息:	$User->getDbError();

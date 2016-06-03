@@ -1,0 +1,14 @@
+<div style="text-align: left;"><input type='hidden' name='avatar' id='thumb' required value="{$info.avatar|default=''}">
+                                <a href='javascript:void(0);'
+                                   onclick="flashupload('thumb_images', '头像上传','thumb',thumb_images,'1,jpg|jpeg|gif|png|bmp,1,,,1','content','12','b6ba209759e147124653ac77362ef2bd');return false;">
+                                    <img src="{$info.avatar|default='__ROOT__/statics/images/icon/upload-pic.png'}" id='thumb_preview'
+                                         width='135' height='113' style='cursor:hand'/></a>
+                                <input type="button" class="btn"
+                                       onclick="$('#thumb_preview').attr('src','__ROOT__/statics/images/icon/upload-pic.png');$('#thumb').val('');return false;"
+                                       value="取消头像" style="display: none">
+                            </div>
+
+
+
+
+<script type="text/javascript" src="__ROOT__/statics/js/content_addtop.js"></script>

@@ -1,0 +1,68 @@
+方式一、一个映射表+正则替换
+
+var keys = Object.keys || function(obj) {
+    obj = Object(obj)
+    var arr = []   
+    for (var a in obj) arr.push(a)
+    return arr
+}
+var invert = function(obj) {
+    obj = Object(obj)
+    var result = {}
+    for (var a in obj) result[obj[a]] = a
+    return result
+}
+var entityMap = {
+    escape: {
+      '&': '&',
+      '<': '<',
+      '>': '>',
+      '"': '"',
+      "'": '''
+    }
+}
+entityMap.unescape = invert(entityMap.escape)
+var entityReg = {
+    escape: RegExp('[' + keys(entityMap.escape).join('') + ']', 'g'),
+    unescape: RegExp('(' + keys(entityMap.unescape).join('|') + ')', 'g')
+}
+ 
+// 将HTML转义为实体
+function escape(html) {
+    if (typeof html !== 'string') return ''
+    return html.replace(entityReg.escape, function(match) {
+        return entityMap.escape[match]
+    })
+}
+// 将实体转回为HTML
+function unescape(str) {
+    if (typeof str !== 'string') return ''
+    return str.replace(entityReg.unescape, function(match) {
+        return entityMap.unescape[match]
+    })   
+}
+ 
+
+方式二、利用浏览器DOM API
+
+
+// 将HTML转义为实体
+function escape(html){
+    var elem = document.createElement('div')
+    var txt = document.createTextNode(html)
+    elem.appendChild(txt)
+    return elem.innerHTML;
+}
+// 将实体转回为HTML
+function unescape(str) {
+    var elem = document.createElement('div')
+    elem.innerHTML = str
+    return elem.innerText || elem.textContent
+}
+有个缺陷是只能转义“< > & ”，对于单引号，双引号都不转义。另外一些非ASCII也不能转义。选择时须注意
+
+比较：
+
+方式1 代码量较大，但灵活性，完整性都比方式2强。可根据需求添加或减少映射表entityMap，且可以运行在任意JS环境中。
+
+方式2 为hack方式，代码量少很多，利用浏览器内部API就行了转义和转回（主流浏览器都支持）。不具完整性，很明显只能在浏览器环境中使用（比如不能在Node.js中跑）。
