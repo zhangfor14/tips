@@ -58,6 +58,7 @@ https://git-for-windows.github.io/ 或百度
 	git checkout -b a 				//创建并切换到分支a
 	git merge a 					//必须先切换到主分支,合并a分支到当前分支
 	git log --graph					//查看分支合并图
+	git merge --no-ff -m "注释" a	//普通模式合并,合并后的历史有分支,能看出来曾经做过合并,而fast forward合并就看不出来曾经做过合并。
 
 10.创建,切换标签
 	git tag									//查看已创建的标签
@@ -94,6 +95,15 @@ https://git-for-windows.github.io/ 或百度
 	//由于远程库是空的，我们第一次推送master分支时，加上了-u参数，Git不但会把本地的master分支内容推送的远程新的master分支，还会把本地的master分支和远程的master分支关联起来，在以后的推送或者拉取时就可以简化命令。
 
 	F,从远程库克隆
-	$ git clone git@github.com:zhangfor14/helper.git
+	git clone git@github.com:zhangfor14/helper.git
+
+12.远程库命令
+	git remote add 远程仓库名称 HTTPS/SSH								//本地库推送到远程
+	git clone git@github.com:zhangfor14/helper.git 						//克隆远程库
+	git remote															//查看远程库信息
+	git remote -v														//查看远程库详细信息
+	git push origin branch-name											//远程推送
+	git branch --set-upstream branch-name origin/branch-name			//建立本地分支和远程分支的关联
+	git pull															//从远程抓取分支,如果有冲突，要先处理冲突
 
 
