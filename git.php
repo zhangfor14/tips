@@ -62,6 +62,7 @@ https://git-for-windows.github.io/ 或百度
 	git tag							//查看已创建的标签
 	git tag v1.0 					//创建标签v1.0
 	git checkout v1.0 				//切换到标签v1.0
+	git show 标签名称				//查看标签详情
 
 11.远程仓库
 	A,本地创建SSH Key:id_rsa是私钥,id_rsa.pub公钥
