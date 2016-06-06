@@ -54,9 +54,10 @@ https://git-for-windows.github.io/ 或百度
 	git branch a 					//创建分支a
 	git branch -d a					//删除分支a,未合并时不会被删除
 	git branch -D a 				//删除分支a,强制删除
-	git merge a 					//必须先切换到主分支,然后合并其他分支
 	git checkout a 					//切换分支到a
 	git checkout -b a 				//创建并切换到分支a
+	git merge a 					//必须先切换到主分支,合并a分支到当前分支
+	git log --graph					//查看分支合并图
 
 10.创建,切换标签
 	git tag									//查看已创建的标签
