@@ -59,10 +59,17 @@ https://git-for-windows.github.io/ 或百度
 	git checkout -b a 				//创建并切换到分支a
 
 10.创建,切换标签
-	git tag							//查看已创建的标签
-	git tag v1.0 					//创建标签v1.0
-	git checkout v1.0 				//切换到标签v1.0
-	git show 标签名称				//查看标签详情
+	git tag									//查看已创建的标签
+	git tag v1.0 							//创建标签v1.0
+	git tag v0.9 6224937					//创建版本id为,6224937,的版本标签为,v0.9
+	git tag -a v0.1 -m "说明文字" 3628164	//用-a指定标签名，-m指定说明文字
+	git tag -s v0.2 -m "说明文字" fec145a	//通过-s用私钥签名一个标签,签名采用PGP签名,必须首先安装gpg(GnuPG)
+	git tag -d v0.1 						//删除一个本地标签
+	git push 库名 <标签名> 					//推送一个本地标签
+	git push 库名 --tags 					//推送全部未推送过的本地标签
+	git push 库名 :refs/tags/<标签名>		//删除一个远程标签
+	git checkout v1.0 						//切换到标签v1.0
+	git show 标签名称						//查看标签详情
 
 11.远程仓库
 	A,本地创建SSH Key:id_rsa是私钥,id_rsa.pub公钥
