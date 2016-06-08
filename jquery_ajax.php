@@ -95,3 +95,19 @@ $.ajax({
        $("#"+divs).html(data);   
     }
 });
+
+//5
+//ajax传村id给php获取后续内容
+$.ajax({
+    data: "village_id="+village_id,
+    type: "post",  
+    url: "{:U('Admin/Farmer/getFarmerTechnician')}",
+    success: function(string) {
+        $('#farmer_technician').html(string);
+        $.getScript('__PUBLIC__/Admin/js/plugins/chosen/chosen.jquery.js');
+        $.getScript('__PUBLIC__/Admin/js/demo/form-advanced-demo.js'); 
+    },
+    error: function(error) {  
+        alert('error:'+error);
+    }  
+});

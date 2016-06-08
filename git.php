@@ -17,8 +17,8 @@ https://git-for-windows.github.io/ 或百度
 2,设置用户名和邮箱,
 	git config user.email "这个是邮箱"
 	git config user.name "你的名字"
-	$ git config --global user.name "Your Name"
-	$ git config --global user.email "email@example.com"
+	git config --global user.name "Your Name"
+	git config --global user.email "email@example.com"
 	//--global 用了这个参数，表示你这台机器上所有的Git仓库都会使用这个配置，当然也可以对某个仓库指定不同的用户名和Email地址。
 
 3,创建仓库目录,并进入 cd
@@ -98,12 +98,13 @@ https://git-for-windows.github.io/ 或百度
 	git clone git@github.com:zhangfor14/helper.git
 
 12.远程库命令
+	ssh -T git@github.com 												//测试添加github账号是否成功
 	git remote add 远程仓库名称 HTTPS/SSH								//本地库推送到远程
 	git clone git@github.com:zhangfor14/helper.git 						//克隆远程库
 	git remote															//查看远程库信息
-	git remote -v														//查看远程库详细信息
+	git remote -v														//查看远程库详细信息,当前项目有哪些远程仓库
 	git push origin branch-name											//远程推送
 	git branch --set-upstream branch-name origin/branch-name			//建立本地分支和远程分支的关联
-	git pull															//从远程抓取分支,如果有冲突，要先处理冲突
+	git pull origin branch-name											//从远程抓取分支,如果有冲突，要先处理冲突
 
 
