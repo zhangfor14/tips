@@ -57,6 +57,8 @@ d
 复选框选中、不选中
 复选框.attr(‘checked’,true/false)
 复选框.attr(‘checked’)
+$('#SelectAll').prop('checked')判断是否选中,值为true/false
+$("input[type='checkbox']").prop('checked',true/false); 设置选中还是不选中
 
 /**
  * 4. 加载事件
