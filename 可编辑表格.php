@@ -59,44 +59,44 @@
 </script>
 
 <!--选项内容 start-->
-                            <div class="form-group">
-                                <label class="col-sm-2 control-label"></label>
-                                <div class="col-md-4">
-                                    <table class="table table-striped table-hover" id="tab">
-                                         <thead>
-                                            <tr>
-                                                <th >选项名称</th>
-                                                <th >选项编码</th>
-                                                <th ></th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <tr>
-                                                <td class="text-edit">选项1</td>
-                                                <td class="text-edit">编码1</td>
-                                                <td align="right">
-                                                    <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td class="text-edit">选项2</td>
-                                                <td class="text-edit">编码2</td>
-                                                <td align="right">
-                                                    <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td class="text-edit"><input type="text" class="form-control" placeholder="请输入选项名称"></td>
-                                                <td class="text-edit"><input type="text" class="form-control" placeholder="请输入选项编码"></td>
-                                                <td align="right">
-                                                    <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
-                                                </td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-                                    <span class="help-block m-b-none">
-                                        点击这里添加选项 <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
-                                    </span>
-                                </div>
-                            </div>
-                            <!--选项内容 start-->
+<div class="form-group">
+    <label class="col-sm-2 control-label"></label>
+    <div class="col-md-4">
+        <table class="table table-striped table-hover" id="tab">
+             <thead>
+                <tr>
+                    <th >选项名称</th>
+                    <th >选项编码</th>
+                    <th ></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td class="text-edit">选项1</td>
+                    <td class="text-edit">编码1</td>
+                    <td align="right">
+                        <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="text-edit">选项2</td>
+                    <td class="text-edit">编码2</td>
+                    <td align="right">
+                        <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="text-edit"><input type="text" class="form-control" placeholder="请输入选项名称"></td>
+                    <td class="text-edit"><input type="text" class="form-control" placeholder="请输入选项编码"></td>
+                    <td align="right">
+                        <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <span class="help-block m-b-none">
+            点击这里添加选项 <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+        </span>
+    </div>
+</div>
+<!--选项内容 start-->
