@@ -1,0 +1,2 @@
+#删除重复字段记录,只保留一条
+DELETE FROM uavorders WHERE NAME IN ( SELECT * FROM (SELECT MAX(NAME) FROM uavorders GROUP BY NAME HAVING COUNT(NAME)>1) AS tab);
