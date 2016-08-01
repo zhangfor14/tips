@@ -1,5 +1,8 @@
 <script>
-// 百度地图API功能
+/**
+ * [map 百度地图API功能,网上示例]
+ * @type {BMap}
+ */
 var map = new BMap.Map("allmap");
 map.centerAndZoom(new BMap.Point(116.404, 39.915), 4);
 map.enableScrollWheelZoom();
@@ -223,4 +226,29 @@ function myMarkerClusterer() {
          }
          return (arg1 + arg2) / m;
     }   
+</script>
+
+<script>
+/**
+ * [监听点击地图事件]
+ * @param  {[type]} e){                   var lng [description]
+ * @return {[type]}      [description]
+ */
+map.addEventListener("click", function(e){  
+    //获取坐标地址
+    var lng=e.point.lng;
+    var lat=e.point.lat;
+    setCookie('lng',lng);
+    setCookie('lat',lat);
+    //获取地址的数据地址
+    var gc = new BMap.Geocoder();
+    var pt = e.point;
+    gc.getLocation(pt, function(rs){
+        var addComp = rs.addressComponents;
+        address = addComp.province +  addComp.city + addComp.district + addComp.street + addComp.streetNumber;
+        alert(address+"\n坐标:"+lng+','+lat);
+        window.history.go(-1);
+    });
+    
+});
 </script>
