@@ -1,5 +1,5 @@
-//计算经纬度两点之间的距离
- function nearby_distance($lat1, $lon1, $lat2, $lon2) {
+//计算经纬度两点之间的距离,返回值千米
+function nearby_distance($lat1, $lon1, $lat2, $lon2) {
     $EARTH_RADIUS = 6378.137;
     $radLat1 = rad($lat1);
     $radLat2 = rad($lat2);

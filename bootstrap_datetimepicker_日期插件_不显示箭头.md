@@ -1,0 +1,1 @@
+input的class值使用form-control或者在datetimepicker的options里把bootcssVer的值直接设为3，否则datetimepicker不会显示出箭头

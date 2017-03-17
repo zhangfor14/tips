@@ -1,6 +1,6 @@
 <?php
     /**
-     * [getExcel description]
+     * [getExcel 导出,下载excel]
      * @return [type] [description]
      */
     public function getExcel(){
@@ -90,4 +90,42 @@
 
         $objWriter = \PHPExcel_IOFactory::createWriter($objPHPExcel, 'Excel5');  //excel5为xls格式，excel2007为xlsx格式  
         $objWriter->save('php://output');
+    }
+    /**
+     * [setExcel 读取,导入excel]
+     * @param string  $filePath [文件地址]
+     * @param integer $sheet    [标签,默认0]
+     */
+    public function setExcel($filePath='.'.PUBLIC_PATH.'duqu.xlsx',$sheet=0){
+        //加载文件
+        import("Tools.Classes.PHPExcel",APP_PATH,".php");
+        if(empty($filePath) or !file_exists($filePath)){
+            die('file not exists');
+        }
+        $PHPReader = new \PHPExcel_Reader_Excel2007();        //建立reader对象
+        if(!$PHPReader->canRead($filePath)){
+                $PHPReader = new \PHPExcel_Reader_Excel5();
+                if(!$PHPReader->canRead($filePath)){
+                        echo 'no Excel';
+                        return ;
+                }
+        }
+        $PHPExcel = $PHPReader->load($filePath);        //建立excel对象
+        $sheetCount = $PHPExcel->getSheetCount();       //获取工作表的数目
+        $currentSheet = $PHPExcel->getSheet($sheet);        //**读取excel文件中的指定工作表*/
+        $allColumn = $currentSheet->getHighestColumn();        //**取得最大的列号*/
+        $allRow = $currentSheet->getHighestRow();        //**取得一共有多少行*/
+        $data = array();
+        for($rowIndex=1;$rowIndex<=$allRow;$rowIndex++){        //循环读取每个单元格的内容。注意行从1开始，列从A开始
+            for($colIndex='A';$colIndex<=$allColumn;$colIndex++){
+                $addr = $colIndex.$rowIndex;
+                $cell = $currentSheet->getCell($addr)->getValue();
+                // gmdate("Y-m-d", \PHPExcel_Shared_Date::ExcelToPHP($currentSheet->getCell($addr)->getValue()));//格式化日期
+                if($cell instanceof \PHPExcel_RichText){ //富文本转换字符串
+                        $cell = $cell->__toString();
+                }
+                $data[$rowIndex][] = $cell;
+            }
+        }
+        dump($data);exit; 
     }

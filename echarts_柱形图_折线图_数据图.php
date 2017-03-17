@@ -70,7 +70,46 @@ ECharts，一个纯 Javascript 的图表库，可以流畅的运行在 PC 和移
 </script>
 
 /**
- * 5.数据组装
+ * 5. 拟态框中初始化
+ */
+<script type="text/javascript">
+	//监听拟态框初始化事件
+    $('#myModal').on('shown.bs.modal',function (e) {
+        loadEcharts('echarts-map-1','echarts-map-2');
+    });
+    //监听选项面板初始化事件
+    $('a[data-toggle="tab"]').on('shown.bs.tab',function (e) {
+        // 获取已激活的标签页的名称
+        var activeTab = $(e.target)[0].hash;
+        if(activeTab=="#tab-1") loadEcharts('echarts-map-1','echarts-map-2');
+        if(activeTab=="#tab-3") loadEcharts('echarts-map-3','echarts-map-4');
+    });
+    //实例化echarts图表
+    function loadEcharts(id1,id2){
+        var myChart1 = echarts.init(document.getElementById(id1));
+        var myChart2 = echarts.init(document.getElementById(id2));
+        // 指定图表的配置项和数据
+        var option = {
+            title: {
+                text: 'ECharts 入门示例'
+            },
+            tooltip: {},
+            legend: {
+                data:['销量']
+            },
+            xAxis: {
+                data: ["衬衫","羊毛衫","雪纺衫","裤子","高跟鞋","袜子"]
+            },
+            yAxis: {},
+            series: [{
+                name: '销量',
+                type: 'bar',
+                data: [5, 20, 36, 10, 10, 20]
+            }]
+        };
+</script>	
+/**
+ * 6.数据组装
  * http://echarts.baidu.com/demo.html#dynamic-data2
  */
 <?php

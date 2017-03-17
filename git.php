@@ -9,7 +9,7 @@ http://www.liaoxuefeng.com/wiki/0013739516305929606dd18361248578c67b8067c8c017b0
 
 一,搜索并下载git
 https://git-for-windows.github.io/ 或百度
-国内镜像:http://pan.baidu.com/s/1skFLrMt#path=%252Fpub%252Fgit
+国内镜像:https://pan.baidu.com/s/1kU5OCOB#list/path=%2Fpub%2Fgit
 
 二,设置git
 1,将git,??????/git/bin/路径加入系统环境变量
