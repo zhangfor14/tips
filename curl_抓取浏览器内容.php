@@ -47,3 +47,5 @@ CURLOPT_RETURNTRANSFER		//true,如果希望获得内容但不输出
 CURLOPT_FILETIME			//true,启用时会尝试修改远程文档中的信息。结果信息会通过curl_getinfo()函数的CURLINFO_FILETIME选项返回
 CURLOPT_COOKIEJAR			//连接结束后保存cookie信息的文件。
 CURLOPT_COOKIEFILE			//包含cookie数据的文件名，cookie文件的格式可以是Netscape格式，或者只是纯HTTP头部信息存入文件。
+
+

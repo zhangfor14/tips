@@ -82,6 +82,10 @@ $().事件类型(function(){
 })
 $().事件类型(函数名);
 $().事件类型();
+针对未来元素的事件:
+$('document').on("click", "#testDiv", function(){ 
+//此处的$(this)指$( "#testDiv")，而非$(document) 
+}); 
 
 事件类型：click、keyup、keydown、mouseover、mouseout、blur、focus、change、submit等等
 
