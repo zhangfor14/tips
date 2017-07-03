@@ -1,0 +1,17 @@
+public function getCoordinate(){
+	  $city=$this->input->post('city');
+	  $province=$this->input->post('province');
+	  $area=$this->input->post('area');
+	  $address=$this->input->post('address');
+	  $json=file_get_contents("http://api.map.baidu.com/geocoder?address=".trim($area).trim($address)."&output=json&key=96980ac7cf166499cbbcc946687fb414&city=".trim($city)."");
+	  $infolist=json_decode($json);
+	  $array=array('errorno'=>'1');
+	  if(isset($infolist->result->location) && !empty($infolist->result->location)){
+	    $array=array(
+		'lng'=>$infolist->result->location->lng,
+		'lat'=>$infolist->result->location->lat,
+		'errorno'=>'0'
+		);
+	  }
+	  echo json_encode($array);
+	}

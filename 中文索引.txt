@@ -1,0 +1,2 @@
+为什么不为goods_name和goods_desc建索引？
+原因：这个字段查询时，肯定要执行：SELECT * FROM goods WHERE goods_name LIKE ‘%红色%’,当以%开头是无法使用索引，所以建索引也没用，这种需要利用全文索引,因为MYSQL不支持中文，最后我们会使用sphinx来做全文索引优化。
