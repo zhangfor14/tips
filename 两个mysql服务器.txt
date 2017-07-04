@@ -1,0 +1,34 @@
+ windows下如何在一台机器上安装两个MYSQL数据库 2012-12-25 21:25:24
+分类： 数据库开发技术
+环境:
+OS:Windows 2003
+DB:MYSQL5.5
+ 
+1.正常安装第一个mysql(安装步骤省略)
+ 
+2.在控制面板里停止第一个mysql服务
+ 
+3.将C:\Program Files\MySQL目录下的所有目录和文件copy到另外一个路径,我这里是copy到E盘
+ 
+4.创建第二个mysql的my.ini文件
+第一个mysql的my.ini文件默认是在如下路径
+C:\Documents and Settings\All Users\Application Data\MySQL\MySQL Server 5.5\my.ini
+copy该ini文件存放到E:\MySQL\mysql_base,这个路径可以随意定义,并修改如下内容:
+[client]
+port=3307 #第一个数据库的默认端口是3306 这里需要另外启用一个端口
+# The TCP/IP Port the MySQL Server will listen on
+port=3307
+# Path to installation directory. All paths are usually resolved relative to this.
+basedir="E:\MySQL\MySQL Server 5.5\"         #第二个数据库basedir
+# Path to the database root
+datadir="E:\MySQL\MySQL Server 5.5\data\"    #第二个数据库datadir
+ 
+5.创建启动服务
+mysqld install MySQL2  --defaults-file="E:\MySQL\mysql_base\ini\my.ini"
+ 
+6.修改注册表
+HKEY_LOCAL_MACHINE-->SYSTEM-->CurrentControlSet-->Services
+找到刚才创建的MySQL2,将ImagePath修改成如下":
+"E:\MySQL\MySQL Server 5.5\bin\mysqld" --defaults-file="E:\MySQL\mysql_base\ini\my.ini" MySQL2
+ 
+-- The End --
