@@ -272,6 +272,8 @@
         E.查看文件或目录的状态
         >#svn status path                   //目录下的文件和子目录的状态，正常状态不显示
         >#svn status -v path                //显示文件和子目录状态
+        F.修改远程url地址
+        >#svn switch --relocate svn://101.201.49.72/repos/web  svn://svn.ruthout.com/repos/web
 
 26.nginx服务器,启动,停止,重启
 0)检查nginx配置文件是否正确
@@ -285,7 +287,7 @@ B.停止主进程号:
 快速停止Nginx：kill -TERM 主进程号  
 强制停止Nginx：kill -9 主进程号     
 3)平滑重启
-kill -HUP 住进称号或进程号文件路径 或 /usr/nginx/sbin/nginx -s reload 
+kill -HUP 住进称号或进程号文件路径 或 /usr/local/nginx/sbin/nginx -s reload
 
 27.apache服务器,启动,停止,重启
 0)检查配置文件
