@@ -274,12 +274,15 @@
         >#svn status -v path                //显示文件和子目录状态
         F.修改远程url地址
         >#svn switch --relocate svn://101.201.49.72/repos/web  svn://svn.ruthout.com/repos/web
+        G.查看svn信息
+        >#svn info
 
 26.nginx服务器,启动,停止,重启
 0)检查nginx配置文件是否正确
 nginx -t -c /usr/nginx/conf/nginx.conf 或 /usr/nginx/sbin/nginx -t 
 1)启动 
 nginx -c /usr/local/nginx/conf/nginx.conf 或 usr/local/nginx/sbin/nginx -c /usr/local/nginx/conf/nginx.conf
+/usr/sbin/nginx -c /etc/nginx/nginx.conf
 2)停止
 A.查询主进程号:ps -ef | grep nginx
 B.停止主进程号:
@@ -288,6 +291,7 @@ B.停止主进程号:
 强制停止Nginx：kill -9 主进程号     
 3)平滑重启
 kill -HUP 住进称号或进程号文件路径 或 /usr/local/nginx/sbin/nginx -s reload
+/usr/sbin/nginx -c /etc/nginx/nginx.conf -s reload
 
 27.apache服务器,启动,停止,重启
 0)检查配置文件
