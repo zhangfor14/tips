@@ -33,3 +33,13 @@ function sendMail($to, $emailtitle, $emailbody) {
     $mail->AltBody = "这是一个纯文本的身体在非营利的HTML电子邮件客户端"; //邮件正文不支持HTML的备用显示
     return($mail->Send());
 }
+
+	// 配置邮件发送服务器
+	'MAIL_HOST' =>'smtp.163.com',//'smtp.vip.163.com',//smtp服务器的名称
+	'MAIL_SMTPAUTH' =>TRUE, //启用smtp认证
+	'MAIL_USERNAME' =>'ruthout@163.com',//'ruthout@vip.163.com',//你的邮箱名
+	'MAIL_FROM' =>'ruthout@163.com',//'ruthout@vip.163.com',//发件人地址
+	'MAIL_FROMNAME'=>'儒斯HR',//发件人姓名
+	'MAIL_PASSWORD' =>'Ruthout123123',//'rusi1001',//邮箱密码
+	'MAIL_CHARSET' =>'utf-8',//设置邮件编码
+	'MAIL_ISHTML' =>TRUE, // 是否HTML格式邮件
