@@ -4,5 +4,5 @@
 "DocBlockr",
 "Emmet",
 "Package Control",
-"SideBarEnhancements",
+<!-- "SideBarEnhancements", -->
 "Xdebug Client"
