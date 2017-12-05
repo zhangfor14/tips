@@ -17,7 +17,7 @@
 4. 用户切换
     > su -  或  su - root       //向root用户切换
     > exit          //退回到原用户
-    
+
     > su 用户名     //普通用户切换
 
     多次使用su指令，会造成用户的“叠加”：
@@ -41,7 +41,7 @@
     1) 创建目录 make directory
     > mkdir  目录名字
     > mkdir -p newdir/newdir/newdir       //递归方式创建多个连续目录
-      
+
       //新的多级目录数目如果大于等于2个，就要使用-p参数
       mkdir      dir/newdir                //不用-p参数
       mkdir  -p  dir/newdir/newdir         //使用-p参数
@@ -55,7 +55,7 @@
 
     3) 改名字  (文件和目录)
     > mv  dir1  newdir          //修改dir1的名字为newdir
-    
+
     mv是“移动” 和 “改名字” 合并的指令
     > mv  dir1  ./newdir            //dir1移动到当前目录下 并改名字为newdir
     > mv  dir1/dir2  dir3           //dir2移动到dir3目录下， 并改名字为“原名”
@@ -89,14 +89,14 @@
                             //默认从第一行开始查看
                             //不支持回看
                             //q 退出查看
-        
+
         less                //通过“上下左右”键查看文件的各个部分内容
                             //支持回看
                             //q 退出查看
-        
+
         head -n filename    //查看文件的前n行内容
         tail -n filename    //查看文件的最末尾n行内容
-        
+
         wc filename         //查看文件的行数
 
     2) 创建文件
@@ -170,7 +170,7 @@
     > umount  /dev/cdrom                        //(硬件)卸载光驱
     > umount  /home/jinnan/rom                  //(挂载点)卸载光驱
     > eject                                     //弹出光盘
-   
+
 15.linux启动项管理
     ># ntsysv
 
@@ -255,15 +255,15 @@
     3).svn命令
     //path是服务器上的目录,http://www.jb51.net/os/RedHat/2461.html
         A.将文件checkout到本地目录
-        >#svn checkout path 
+        >#svn checkout path
         >#svn co                            //简写
-        B.将改动的文件commit到版本库 
-        >#svn commit -m “LogMessage“ [-N] [--no-unlock] PATH 
-        //如果在提交的时候提示过期的话，是因为冲突，需要先update，修改文件，然后清除svn resolved，最后再提交commit)        
+        B.将改动的文件commit到版本库
+        >#svn commit -m “LogMessage“ [-N] [--no-unlock] PATH
+        //如果在提交的时候提示过期的话，是因为冲突，需要先update，修改文件，然后清除svn resolved，最后再提交commit)
         >#svn ci                            //简写
         C.更update到某个版本
         >#svn update -r m path
-        >#svn up                            //简写 
+        >#svn up                            //简写
         >#svn update                        //如果后面没有目录，默认将当前目录以及子目录下的所有文件都更新到最新版本。
         >#svn update -r 200 test.php        //将版本库中的文件test.php还原到版本200
         >#svn update test.php               //更新，于版本库同步。
@@ -279,16 +279,16 @@
 
 26.nginx服务器,启动,停止,重启
 0)检查nginx配置文件是否正确
-nginx -t -c /usr/nginx/conf/nginx.conf 或 /usr/nginx/sbin/nginx -t 
-1)启动 
+nginx -t -c /usr/nginx/conf/nginx.conf 或 /usr/nginx/sbin/nginx -t
+1)启动
 nginx -c /usr/local/nginx/conf/nginx.conf 或 usr/local/nginx/sbin/nginx -c /usr/local/nginx/conf/nginx.conf
 /usr/sbin/nginx -c /etc/nginx/nginx.conf
 2)停止
 A.查询主进程号:ps -ef | grep nginx
 B.停止主进程号:
-从容停止Nginx：kill -QUIT 主进程号  
-快速停止Nginx：kill -TERM 主进程号  
-强制停止Nginx：kill -9 主进程号     
+从容停止Nginx：kill -QUIT 主进程号
+快速停止Nginx：kill -TERM 主进程号
+强制停止Nginx：kill -9 主进程号
 3)平滑重启
 kill -HUP 住进称号或进程号文件路径 或 /usr/local/nginx/sbin/nginx -s reload
 /usr/sbin/nginx -c /etc/nginx/nginx.conf -s reload
@@ -310,3 +310,44 @@ kill -HUP 住进称号或进程号文件路径 或 /usr/local/nginx/sbin/nginx -
 /etc/inint.d/mysqld stop
 3)重启
 /etc/inint.d/mysqld restart
+
+26.vim
+#打开创建
+>vim filename //打开vim并创建名为filename的文件
+#vim模式
+正常模式（按Esc或Ctrl+[进入） 左下角显示文件名或为空
+插入模式（按i键进入） 左下角显示--INSERT--
+可视模式（不知道如何进入） 左下角显示--VISUAL--
+#退出
+>:wq 保存并退出
+>ZZ 保存并退出
+>:q! 强制退出并忽略所有更改
+>:e! 放弃所有修改，并打开原来文件。
+#插入命令
+i 在当前位置生前插入
+I 在当前行首插入
+a 在当前位置后插入
+A 在当前行尾插入
+o 在当前行之后插入一行
+O 在当前行之前插入一行
+#光标移动
+在命令行模式下输入G  可以直接跳转到页面的底部
+在命令行模式下输入1G 可以跳转到页面的头部位置
+>:52    //跳到指定行，冒号+行号，回车，比如跳到240行就是 :240回车
+>52G    //跳到指定行，冒号+行号，回车，比如跳到240行就是 :240回车
+Ctrl + e 向下滚动一行
+Ctrl + y 向上滚动一行
+Ctrl + d 向下滚动半屏
+Ctrl + u 向上滚动半屏
+Ctrl + f 向下滚动一屏
+Ctrl + b 向上滚动一屏
+#撤销
+u 撤销（Undo）
+U 撤销对整行的操作
+Ctrl + r 重做（Redo），即撤销的撤销。
+#执行shell命令
+:!command
+:!ls 列出当前目录下文件
+:!perl -c script.pl 检查perl脚本语法，可以不用退出vim，非常方便。
+:!perl script.pl 执行perl脚本，可以不用退出vim，非常方便。
+:suspend或Ctrl - Z 挂起vim，回到shell，按fg可以返回vim。
