@@ -154,58 +154,63 @@
         //数字绝对方式权限的设置,0:没有权限,1:执行,2:写,3:写执行,4:读,5:读执行,6:读写,7:读写执行
         >#chmod 753 目录      //主人7权限,同组5权限,其他组3权限
 
-    8.重启命令 & 关机命令：
+    8. 系统/服务重启
 
-    	1)、reboot  重启
+        1). 系统重启命令 & 关机命令：
 
-    	2)、shutdown -r now 立刻重启(root用户使用)
+        	1)、reboot  重启
 
-    	3)、shutdown -r 10 过10分钟自动重启(root用户使用)
+        	2)、shutdown -r now 立刻重启(root用户使用)
 
-    	4)、shutdown -r 20:35 在时间为20:35时候重启(root用户使用)
+        	3)、shutdown -r 10 过10分钟自动重启(root用户使用)
+
+        	4)、shutdown -r 20:35 在时间为20:35时候重启(root用户使用)
 
 
-    	1)、halt   立刻关机
+        	1)、halt   立刻关机
 
-    	2)、poweroff  立刻关机
+        	2)、poweroff  立刻关机
 
-    	3)、shutdown -h now 立刻关机(root用户使用)
+        	3)、shutdown -h now 立刻关机(root用户使用)
 
-    	4)、shutdown -h 10 10分钟后自动关机
+        	4)、shutdown -h 10 10分钟后自动关机
 
-    26.nginx服务器,启动,停止,重启
-        0)检查nginx配置文件是否正确
-        nginx -t -c /usr/nginx/conf/nginx.conf 或 /usr/nginx/sbin/nginx -t
-        1)启动
-        nginx -c /usr/local/nginx/conf/nginx.conf 或 usr/local/nginx/sbin/nginx -c /usr/local/nginx/conf/nginx.conf
-        /usr/sbin/nginx -c /etc/nginx/nginx.conf
-        2)停止
-        A.查询主进程号:ps -ef | grep nginx
-        B.停止主进程号:
-        从容停止Nginx：kill -QUIT 主进程号
-        快速停止Nginx：kill -TERM 主进程号
-        强制停止Nginx：kill -9 主进程号
-        3)平滑重启
-        kill -HUP 住进称号或进程号文件路径 或 /usr/local/nginx/sbin/nginx -s reload
-        /usr/sbin/nginx -c /etc/nginx/nginx.conf -s reload
+        2). 启动,重启,停止服务
+            ># service 服务名 start/stop/restart
 
-    27.apache服务器,启动,停止,重启
-        0)检查配置文件
-        /usr/local/apache2/bin/apachectl configtest
-        1)启动
-        /usr/local/apache2/bin/apachectl start apaceh
-        2)停止
-        /usr/local/apache2/bin/apachectl stop
-        3)重启
-        /usr/local/apache2/bin/apachectl restart
+        3).nginx服务器,启动,停止,重启
+            0)检查nginx配置文件是否正确
+            nginx -t -c /usr/nginx/conf/nginx.conf 或 /usr/nginx/sbin/nginx -t
+            1)启动
+            nginx -c /usr/local/nginx/conf/nginx.conf 或 usr/local/nginx/sbin/nginx -c /usr/local/nginx/conf/nginx.conf
+            /usr/sbin/nginx -c /etc/nginx/nginx.conf
+            2)停止
+            A.查询主进程号:ps -ef | grep nginx
+            B.停止主进程号:
+            从容停止Nginx：kill -QUIT 主进程号
+            快速停止Nginx：kill -TERM 主进程号
+            强制停止Nginx：kill -9 主进程号
+            3)平滑重启
+            kill -HUP 住进称号或进程号文件路径 或 /usr/local/nginx/sbin/nginx -s reload
+            /usr/sbin/nginx -c /etc/nginx/nginx.conf -s reload
 
-        28.mysql服务器,启动,停止,重启
-        1)启动
-        /etc/inint.d/mysqld start
-        2)停止
-        /etc/inint.d/mysqld stop
-        3)重启
-        /etc/inint.d/mysqld restart
+        4).apache服务器,启动,停止,重启
+            0)检查配置文件
+            /usr/local/apache2/bin/apachectl configtest
+            1)启动
+            /usr/local/apache2/bin/apachectl start apaceh
+            2)停止
+            /usr/local/apache2/bin/apachectl stop
+            3)重启
+            /usr/local/apache2/bin/apachectl restart
+
+        5).mysql服务器,启动,停止,重启
+            1)启动
+            /etc/inint.d/mysqld start
+            2)停止
+            /etc/inint.d/mysqld stop
+            3)重启
+            /etc/inint.d/mysqld restart
 
     14.光驱挂载
         > mount   /dev/cdrom  /home/jinnan/rom      //把光驱挂载到rom目录
@@ -221,9 +226,6 @@
 
     17.查看网络信息
     	># ifconfig
-
-    18.启动,重启,停止服务
-    	># service 服务名 start/stop/restart
 
     19.查看服务是否启动
     	>#ps -A | grep 服务名(模糊查询)
