@@ -89,8 +89,101 @@
         > pwd
         > whoami
 
-
 二.系统操作
+
+    1. 用户操作
+        配置文件：/etc/passwd
+        1) 创建用户 user add
+        ># useradd
+        ># useradd  liming          //创建liming用户，同时会创建一个同名的组出来
+        ># useradd  -g 组别编号  username   //把用户的组别设置好，避免创建同名的组出来
+        ># useradd  -g 组编号  -u 用户编号  -d 家目录   username
+
+        2) 修改用户 user modify
+        ># usermod  -g 组编号  -u 用户编号  -d 家目录  -l 新名字  username
+        (修改家目录时需要手动创建之)
+
+        3) 删除用户 user delete
+        ># userdel  username
+        ># userdel -r  username    //删除用户同时删除其家目录
+
+        4) 给用户设置密码，使其登录系统
+        > passwd 用户名
+
+    2. 组别操作
+        配置文件： /etc/group
+        1) 创建组 group add
+        ># groupadd  music
+        ># groupadd  movie
+        ># groupadd  php
+
+        2) 修改组 group modify
+        ># groupmod  -g gid  -n 新名字  groupname
+
+        3) 删除组 group delete
+        ># groupdel  groupname    //组下边如果有用户存在，就禁止删除
+
+    3. 权限设置chmod
+        1).字母相对方式权限的设置
+        >#chmod (ugo)(+-)(rwx) 目录 u:当前用户,g:同组用户,o:其他组用户;+-增加减少权限;r:读取权限,w:写权限,x:执行权限
+        >#sudo chmod -R ugo+rwx /usr/local/http2/htdocs/ZZYPHP/ //给该目录下所有子文件目录在当前组其他组都有读写执行权限
+        //数字绝对方式权限的设置,0:没有权限,1:执行,2:写,3:写执行,4:读,5:读执行,6:读写,7:读写执行
+        >#chmod 753 目录      //主人7权限,同组5权限,其他组3权限
+
+    4. 光驱挂载
+        > mount   /dev/cdrom  /home/jinnan/rom      //把光驱挂载到rom目录
+        > umount  /dev/cdrom                        //(硬件)卸载光驱
+        > umount  /home/jinnan/rom                  //(挂载点)卸载光驱
+        > eject                                     //弹出光盘
+
+    5. 磁盘操作
+        1).df：列出文件系统的整体磁盘使用量
+        >df [-ahikHTm] [目录或文件名]
+        选项与参数：
+            -a ：列出所有的文件系统，包括系统特有的 /proc 等文件系统；
+            -k ：以 KBytes 的容量显示各文件系统；
+            -m ：以 MBytes 的容量显示各文件系统；
+            -h ：以人们较易阅读的 GBytes, MBytes, KBytes 等格式自行显示；
+            -H ：以 M=1000K 取代 M=1024K 的进位方式；
+            -T ：显示文件系统类型, 连同该 partition 的 filesystem 名称 (例如 ext3) 也列出；
+            -i ：不用硬盘容量，而以 inode 的数量来显示
+        2).du命令也是查看使用空间的，但是与df命令不同的是Linux du命令是对文件和目录磁盘使用的空间的查看
+        >du [-ahskm] 文件或目录名称
+        选项与参数：
+            -a ：列出所有的文件与目录容量，因为默认仅统计目录底下的文件量而已。
+            -h ：以人们较易读的容量格式 (G/M) 显示；
+            -s ：列出总量而已，而不列出每个各别的目录占用容量；
+            -S ：不包括子目录下的总计，与 -s 有点差别。
+            -k ：以 KBytes 列出容量显示；
+            -m ：以 MBytes 列出容量显示；
+        3).fdisk 是 Linux 的磁盘分区表操作工具。
+        >fdisk [-l] 装置名称
+        选项与参数：
+            -l ：输出后面接的装置所有的分区内容。若仅有 fdisk -l 时， 则系统将会把整个系统内能够搜寻到的装置的分区均列出来。
+        4).磁盘格式化
+        >mkfs [-t 文件系统格式] 装置文件名
+        选项与参数：
+            -t ：可以接文件系统格式，例如 ext3, ext2, vfat 等(系统有支持才会生效)
+
+        5).磁盘检验
+            fsck（file system check）用来检查和维护不一致的文件系统。若系统掉电或磁盘发生问题，可利用fsck命令对文件系统进行检查
+        >fsck [-t 文件系统] [-ACay] 装置名称
+        选项与参数：
+            -t : 给定档案系统的型式，若在 /etc/fstab 中已有定义或 kernel 本身已支援的则不需加上此参数
+            -s : 依序一个一个地执行 fsck 的指令来检查
+            -A : 对/etc/fstab 中所有列出来的 分区（partition）做检查
+            -C : 显示完整的检查进度
+            -d : 打印出 e2fsck 的 debug 结果
+            -p : 同时有 -A 条件时，同时有多个 fsck 的检查一起执行
+            -R : 同时有 -A 条件时，省略 / 不检查
+            -V : 详细显示模式
+            -a : 如果检查有错则自动修复
+            -r : 如果检查有错则由使用者回答是否修复
+            -y : 选项指定检测每个文件是自动输入yes，在不确定那些是不正常的时候，可以执行 # fsck -y 全部检查修复。
+        6).磁盘挂载与卸除
+        >mount [-t 文件系统] [-L Label名] [-o 额外选项] [-n]  装置文件名  挂载点
+
+三.系统命令
 
     1. 用户切换
         > su -  或  su - root       //向root用户切换
@@ -115,46 +208,7 @@
         > sudo 指令
         eg.sudo passwd root
 
-    5. 用户操作
-        配置文件：/etc/passwd
-        1) 创建用户 user add
-        ># useradd
-        ># useradd  liming          //创建liming用户，同时会创建一个同名的组出来
-        ># useradd  -g 组别编号  username   //把用户的组别设置好，避免创建同名的组出来
-        ># useradd  -g 组编号  -u 用户编号  -d 家目录   username
-
-        2) 修改用户 user modify
-        ># usermod  -g 组编号  -u 用户编号  -d 家目录  -l 新名字  username
-        (修改家目录时需要手动创建之)
-
-        3) 删除用户 user delete
-        ># userdel  username
-        ># userdel -r  username    //删除用户同时删除其家目录
-
-        4) 给用户设置密码，使其登录系统
-        > passwd 用户名
-
-    6. 组别操作
-        配置文件： /etc/group
-        1) 创建组 group add
-        ># groupadd  music
-        ># groupadd  movie
-        ># groupadd  php
-
-        2) 修改组 group modify
-        ># groupmod  -g gid  -n 新名字  groupname
-
-        3) 删除组 group delete
-        ># groupdel  groupname    //组下边如果有用户存在，就禁止删除
-
-    7. 权限设置chmod
-        1).字母相对方式权限的设置
-        >#chmod (ugo)(+-)(rwx) 目录 u:当前用户,g:同组用户,o:其他组用户;+-增加减少权限;r:读取权限,w:写权限,x:执行权限
-        >#sudo chmod -R ugo+rwx /usr/local/http2/htdocs/ZZYPHP/ //给该目录下所有子文件目录在当前组其他组都有读写执行权限
-        //数字绝对方式权限的设置,0:没有权限,1:执行,2:写,3:写执行,4:读,5:读执行,6:读写,7:读写执行
-        >#chmod 753 目录      //主人7权限,同组5权限,其他组3权限
-
-    8. 系统/服务重启
+    5. 系统/服务重启
 
         1). 系统重启命令 & 关机命令：
 
@@ -212,35 +266,29 @@
             3)重启
             /etc/inint.d/mysqld restart
 
-    14.光驱挂载
-        > mount   /dev/cdrom  /home/jinnan/rom      //把光驱挂载到rom目录
-        > umount  /dev/cdrom                        //(硬件)卸载光驱
-        > umount  /home/jinnan/rom                  //(挂载点)卸载光驱
-        > eject                                     //弹出光盘
-
-    15.linux启动项管理
+    6.linux启动项管理
         ># ntsysv
 
-    16.设备管理,包括防火墙
+    7.设备管理,包括防火墙
         ># setup
 
-    17.查看网络信息
+    8.查看网络信息
     	># ifconfig
 
-    19.查看服务是否启动
+    9.查看服务是否启动
     	>#ps -A | grep 服务名(模糊查询)
 
-    20.杀死进程
+    10.杀死进程
     	>#ps killall  httpd  杀死全部的httpd进程
 
-    22.寻找进程安装目录
+    11.寻找进程安装目录
         >#find / -name opensslv.h
-
-    23.下载到本地
-        >#wget 地址
 
 
 三.软件安装
+
+    0.下载到本地
+        >#wget 地址
 
     1.rpm方式安装软件：
         >#rpm  -ivh  软件包全名          //安装软件
