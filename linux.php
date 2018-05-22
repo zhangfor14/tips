@@ -278,10 +278,13 @@
     9. 查看服务是否启动
     	>#ps -A | grep 服务名(模糊查询)
 
-    10. 杀死进程
+    10.查看进程
+        >#ps -ef | grep nginx
+
+    11. 杀死进程
     	>#ps killall  httpd  杀死全部的httpd进程
 
-    11. 寻找进程安装目录
+    12. 寻找进程安装目录
         >#find / -name opensslv.h
 
 三.系统查看
@@ -476,6 +479,10 @@
         :!perl -c script.pl 检查perl脚本语法，可以不用退出vim，非常方便。
         :!perl script.pl 执行perl脚本，可以不用退出vim，非常方便。
         :suspend或Ctrl - Z 挂起vim，回到shell，按fg可以返回vim。
+
+    7.lnmp安装
+    https://blog.csdn.net/anan890624/article/details/72795069
+    https://blog.csdn.net/sturdygrass/article/details/51750108
 
 
 
