@@ -266,6 +266,14 @@
             3)重启
             /etc/inint.d/mysqld restart
 
+        6).php-fpm服务,启动,停止,重启
+            1)启动
+            /etc/inint.d/php-fpm start
+            2)停止
+            /etc/inint.d/php-fpm stop
+            3)重启
+            /etc/inint.d/php-fpm restart
+
     6. linux启动项管理
         ># ntsysv
 
@@ -279,13 +287,82 @@
     	>#ps -A | grep 服务名(模糊查询)
 
     10.查看进程
+        1).查看进程
         >#ps -ef | grep nginx
+        2).查看端口下进程
+        >#netstat -tln | grep 端口号
+        >#sudo lsof -i:端口号
+        >#sudo kill -9 端口号
 
     11. 杀死进程
     	>#ps killall  httpd  杀死全部的httpd进程
 
     12. 寻找进程安装目录
         >#find / -name opensslv.h
+
+    13. 环境变量
+        1). 永久添加环境变量(影响当前用户)
+        #vim ~/.bashrc
+        export PATH=$PATH:/usr/local/nginx/sbin/
+        保存，退出，然后运行：
+        #source /etc/profile
+        2).永久添加环境变量(影响所有用户)
+        # vim /etc/profile
+        在文档最后，添加:
+        export PATH=$PATH:/usr/local/nginx/sbin/
+        保存，退出，然后运行：
+        #source /etc/profile
+
+        echo ${/usr/local/nginx/sbin/#/deletion_name:}
+
+    14. host
+        host文件位置：/etc/hosts
+        vim /etc/hosts即可编辑
+
+    15. 防火墙（centos7）
+        启动：systemctl start firewalld
+        查看状态：systemctl status firewalld
+        停止： systemctl disable firewalld
+        禁用： systemctl stop firewalld
+
+        查看所有打开的端口： firewall-cmd --zone=public --list-ports
+        开启端口：
+        firewall-cmd --zone=public --add-port=80/tcp --permanent    （--permanent永久生效，没有此参数重启后失效）
+        重新载入
+        firewall-cmd --reload
+        查看
+        firewall-cmd --zone= public --query-port=80/tcp
+        删除
+        firewall-cmd --zone= public --remove-port=80/tcp --permanent
+        显示状态： firewall-cmd --state
+
+    16.IP地址
+        A.查看所使用的网卡名称
+        #>ifconfig -a
+        #############################
+        ens32:  flags=4163<UP,BROADCAST,RUNNING,MULTICAST>  mtu 1500
+                inet 192.168.2.40  netmask 255.255.255.0  broadcast 192.168.2.255
+                inet6 fe80::20c:29ff:fece:fc3c  prefixlen 64  scopeid 0x20<link>
+                ether 00:0c:29:ce:fc:3c  txqueuelen 1000  (Ethernet)
+                RX packets 17403  bytes 1453165 (1.3 MiB)
+                RX errors 0  dropped 0  overruns 0  frame 0
+                TX packets 1107  bytes 201665 (196.9 KiB)
+                TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
+        #############################
+        当前使用网卡:ens32,ip地址为:192.168.2.40
+        B.查看网卡配置
+        vim /etc/sysconfig/network-scripts/ifcfg-ens32
+        cd /etc/sysconfig/network-scripts
+        HWADDR=00:50:56:28:22:ff
+        C.修改配置(dhcp)
+        HWADDR=物理网卡地址
+        BOOTPROTO=dhcp改为BOOTPROTO=static
+        IPADDR=192.168.2.40
+        NETMASK=255.255.255.0
+        NM_CONTROLLED=no
+        rm -rf /etc/udev/rules.d/70-persistent-net.rules
+        D.重启服务
+        service network restart
 
 三.系统查看
     # uname -a # 查看内核/操作系统/CPU信息
@@ -438,6 +515,76 @@
             >#svn switch --relocate svn://101.201.49.72/repos/web  svn://svn.ruthout.com/repos/web
             G.查看svn信息
             >#svn info
+        4).版本库维护
+            1.环境
+            centos5.5
+
+            2.安装svn
+            yum -y install subversion
+
+            3.配置
+
+            建立版本库目录
+            mkdir /www/svndata
+
+            svnserve -d -r /www/svndata
+
+            4.建立版本库
+
+            创建一个新的Subversion项目
+            svnadmin create /www/svndata/oplinux
+
+            配置允许用户rsync访问
+            cd /www/svndata/oplinux/conf
+
+            vi svnserve.conf
+            anon-access=none
+            auth-access=write
+            password-db=passwd
+
+            注：修改的文件前面不能有空格，否则启动svn server出错
+
+            vi passwd
+            [users]
+            #<用户1> = <密码1>
+            #<用户2> = <密码2>
+            david=123456
+
+            5.客户端连接
+            svn co svn://ip/oplinux
+            用户名密码:123456
+
+            ===============================================================
+
+            6.实现SVN与WEB同步,可以CO一个出来,也可以直接配在仓库中
+
+            1)设置WEB服务器根目录为/www/webroot
+
+            2)checkout一份SVN
+
+            svn co svn://localhost/oplinux /data/www/webroot
+
+            修改权限为WEB用户
+
+            chown -R apache:apache /www/webroot/oplinux
+
+            3)建立同步脚本
+
+            cd /data/www/svndata/dykind/hooks/
+
+            cp post-commit.tmpl post-commit
+
+            编辑post-commit,在文件最后添加以下内容
+
+            export LANG=en_US.UTF-8
+            SVN=/usr/bin/svn
+            WEB=/www/webroot/
+            $SVN update $WEB –username rsync –password rsync
+            chown -R apache:apache $WEB
+
+            增加脚本执行权限
+
+            chmod +x post-commit
 
     6.使用vim
         #打开创建
@@ -480,9 +627,637 @@
         :!perl script.pl 执行perl脚本，可以不用退出vim，非常方便。
         :suspend或Ctrl - Z 挂起vim，回到shell，按fg可以返回vim。
 
-    7.lnmp安装
-    https://blog.csdn.net/anan890624/article/details/72795069
-    https://blog.csdn.net/sturdygrass/article/details/51750108
+    7.redis安装
+        0)链接
+            https://blog.csdn.net/yjqyyjw/article/details/73293455
+        1)下载安装
+            $.wget http://download.redis.io/releases/redis-4.0.6.tar.gz 或 wget http://182.150.63.148:8090/redis/redis-stable.tar.gz
+            $.tar -zxvf redis-4.0.6.tar.gz
+            $.cd redis-4.0.6
+            $.make
+            $.cd src
+            $.make install PREFIX=/usr/local/redis
+        2)配置
+            A.复制配置
+            $.cp redis.conf /usr/local/redis/etc/redis.conf
+            B.启动服务
+            $./usr/local/redis/bin/redis-server /usr/local/redis/etc/redis.conf
+            第一个是启动redis服务器
+            第二个是启动服务器所需的配置
+            C.修改配置
+            $.vim /usr/local/redis/etc/redis.conf
+            将daemonize的值改为yes
+            pidfile默认值是pidfile /var/run/redis_6379.pid
+            添加密码
+            requirepass dy123456
+            D.复制服务启动脚本
+            复制服务启动脚本
+            $.cp redis_init_script /etc/init.d/redis
+        3)服务(centos7以下)
+            A.开机启动
+            $.vim /etc/rc.local 加入 usr/local/redis/bin/redis-server /usr/local/redis/etc/redis-conf
+            B.停止服务
+            $./usr/local/redis/bin/redis-cli shutdown或者pkill redis-server
+            C.客户端连接
+            /usr/local/redis/bin/redis-cli
+        4)服务(centos7以上)
+            A.添加服务,开机启动
+                vim /etc/init.d/redis #查看脚本内容(注意添加密码授权)
+                #################编辑内容 start############################
+                    #!/bin/bash
+                    # chkconfig:   2345 90 10
 
+                    # description:  Redis is a persistent key-value database
+                    PATH=/usr/local/bin:/sbin:/usr/bin:/bin
+                    REDISPORT=6379
+                    EXEC=/usr/local/redis/bin/redis-server
+                    RESDISPASSWORD=dy123456
+                    REDIS_CLI=/usr/local/redis/bin/redis-cli
+                    PIDFILE=/var/run/redis_6379.pid
+                    CONF="/usr/local/redis/etc/redis.conf"
+                    case "$1" in
+                        start)
+                            if [ -f $PIDFILE ]
+                            then
+                                echo "$PIDFILE exists, process is already running or crashed"
+                            else
+                                echo "Starting Redis server..."
+                                $EXEC $CONF
+                            fi
+                            if [ "$?"="0" ]
+                            then
+                                echo "Redis is running..."
+                            fi
+                            ;;
+                        stop)
+                            if [ ! -f $PIDFILE ]
+                            then
+                                echo "$PIDFILE does not exist, process is not running"
+                            else
+                                PID=$(cat $PIDFILE)
+                                echo "Stopping ..."
+                                $REDIS_CLI -a $RESDISPASSWORD  -p $REDISPORT shutdown
+                                while [ -x ${PIDFILE} ]
+                                do
+                                echo "Waiting for Redis to shutdown ..."
+                                sleep 1
+                                done
+                                echo "Redis stopped"
+                            fi
+                            ;;
+                        restart|force-reload)
+                            ${0} stop
+                            ${0} start
+                            ;;
+                        *)
+                            echo "Usage: /etc/init.d/redis {start|stop|restart|force-reload}" >&2
+                            exit 1
+                    esac
+                #################编辑内容 end  ############################
+                chmod a+x /etc/init.d/redis
+                chkconfig --add redis
+                chkconfig redis on
+            B.操作
+                /etc/init.d/redis start
+                /etc/init.d/redis restart
+                /etc/init.d/redis stop
 
+    8.git
+        A.安装
+            yum git
+        B.常用命令
+            git init  #在本地新建一个repo,进入一个项目目录,执行git init,会初始化一个repo,并在当前文件夹下创建一个.git文件夹.
+            git clone url newname #clone下来的repo会以url最后一个斜线后面的名称命名,创建一个文件夹,如果想要指定特定的名称
+            git status: #查询repo的状态
+            git status -s: #-s表示short, -s的输出标记会有两列,第一列是对staging区域而言,第二列是对working目录而言.
+            git add#在提交之前,Git有一个暂存区(staging area),可以放入新添加的文件或者加入新的改动. commit时提交的改动是上一次加入到staging area中的改动,而不是我们disk上的改动.
+            git add .#会递归地添加当前工作目录中的所有文件.
+            git commit#提交已经被add进来的改动.
+            git commit -m #"the commit message"
+            git commit -a #会先把所有已经track的文件的改动add进来,然后提交(有点像svn的一次提交,不用先暂存). 对于没有track的文件,还是需要git add一下.
+            git commit --amend #增补提交. 会使用与当前提交节点相同的父节点进行一次新的提交,旧的提交将会被取消.
+            git push [alias] [branch]#将会把当前分支merge到alias上的[branch]分支.如果分支已经存在,将会更新,如果不存在,将会添加这个分支
+            git pull origin 分支#会首先执行git fetch,然后执行git merge,把取来的分支的head merge到当前分支.这个merge操作会产生一个新的commit
+            git log#show commit history of a branch
+            git diff#此命令比较的是工作目录中当前文件和暂存区域快照之间的差异,也就是修改之后还没有暂存起来的变化内容.
+        C.生成ssh-key
+            ssh-keygen -t rsa -C "wdyxzkq@163.com" -b 4096
+            回车知道看到图案
+            vim /root/.ssh/id_rsa.pub
+            复制公钥添加至账户sshkey
 
+            使用Tortoisegit生成key,查看地址:https://blog.csdn.net/m0_37727560/article/details/79408251
+
+    9.docker
+        A.安装
+            a.准备工作
+                uname -r 3.10.0-327.el7.x86_64
+                Docker 运行在 CentOS 7 上，要求系统为64位、系统内核版本为 3.10 以上。
+                Docker 运行在 CentOS-6.5 或更高的版本的 CentOS 上，要求系统为64位、系统内核版本为 2.6.32-431 或者更高版本。
+            b.移除旧的版本：
+                $ sudo yum remove docker \
+                                  docker-client \
+                                  docker-client-latest \
+                                  docker-common \
+                                  docker-latest \
+                                  docker-latest-logrotate \
+                                  docker-logrotate \
+                                  docker-selinux \
+                                  docker-engine-selinux \
+                                  docker-engine
+            c.安装一些必要的系统工具：
+                sudo yum install -y yum-utils device-mapper-persistent-data lvm2
+            d.添加软件源信息：
+                sudo yum-config-manager --add-repo http://mirrors.aliyun.com/docker-ce/linux/centos/docker-ce.repo
+            e.更新 yum 缓存：
+                sudo yum makecache fast
+            f.安装 Docker-ce：
+                sudo yum -y install docker-ce
+            g.启动 Docker 后台服务
+                sudo systemctl start docker 或 service docker start
+            h.验证是否安装成功
+                docker version# 或者$ docker info
+            i.测试运行 hello-world
+                [root@runoob ~]# docker run hello-world
+            j.工作目录
+                cd /var/lib/docker/
+
+    10.docker-compose
+        A.pip安装
+            a.安装python-pip
+                yum -y install epel-release
+                yum -y install python-pip
+            b.安装docker-compose
+                pip install docker-compose
+            c.报错(Cannot uninstall ‘requests’. It is a distutils installed project and thus we cannot accurately determine which files belong to it which would lead to only a partial uninstall.),解决办法
+                pip install docker-compose --ignore-installed requests
+            d.查看是否安装成
+                docker-compose version
+        B.常用命令
+            a.查看启动的容器:docker ps -a
+            b.进入swoft容器:docker exec -it swoft bash
+            c.启动容器:docker-compose up -d swoft
+            d.停止容器:docker-compose stop swoft
+
+    11.swoft
+        A.安装
+            a.composer安装
+                composer create-project swoft/swoft swoft
+                cd swoft
+                composer install --no-dev # 不安装 dev 依赖会更快一些
+            b.手动安装
+                git clone https://github.com/swoft-cloud/swoft
+                cd swoft
+                composer install --no-dev # 不安装 dev 依赖会更快一些
+                cp .env.example .env
+                vim .env # 根据需要调整启动参数
+            c.Docker方式安装
+                docker run -p 80:80 swoft/swoft
+            d.Docker-Compose 安装
+                git clone https://github.com/swoft-cloud/swoft
+                cd swoft
+                修改docker-compose.yml
+                ########################################
+                version: '3'
+                services:
+                    swoft:
+                        container_name: swoft
+                        image: swoft/swoft
+                        ports:
+                            - "80:80"
+                        #volumes:
+                        #   - ./:/var/www/swoft
+                        stdin_open: true0
+                        tty: true
+                        command: /bin/bash
+                ########################################
+                docker-compose up -d
+        B.安装依赖
+            composer install --no-dev # 不安装 dev 依赖会更快一些
+            cp .env.example .env
+            vim .env # 根据需要调整启动参数
+        C.启动
+            a.HTTP 服务器
+                // 启动服务，根据 .env 配置决定是否是守护进程
+                php bin/swoft start
+                // 守护进程启动，覆盖 .env 守护进程(DAEMONIZE)的配置
+                php bin/swoft start -d
+                // 重启
+                php bin/swoft restart
+                // 重新加载
+                php bin/swoft reload
+                // 关闭服务
+                php bin/swoft stop
+            b.WebSocket服务器
+                // 启动服务，根据 .env 配置决定是否是守护进程
+                php bin/swoft ws:start
+                // 守护进程启动，覆盖 .env 守护进程(DAEMONIZE)的配置
+                php bin/swoft ws:start -d
+                // 重启
+                php bin/swoft ws:restart
+                // 重新加载
+                php bin/swoft ws:reload
+                // 关闭服务
+                php bin/swoft ws:stop
+            c.RPC 服务器
+                // 启动服务，根据 .env 配置决定是否是守护进程
+                php bin/swoft rpc:start
+                // 守护进程启动，覆盖 .env 守护进程(DAEMONIZE)的配置
+                php bin/swoft rpc:start -d
+                // 重启
+                php bin/swoft rpc:restart
+                // 重新加载
+                php bin/swoft rpc:reload
+                // 关闭服务
+                php bin/swoft rpc:stop
+
+五.lnmp安装
+    参考文档
+    nginx11+php5.6+mysql5.6   https://blog.csdn.net/sturdygrass/article/details/51750108
+    nginx12+php7.2+mysql5.7   https://blog.csdn.net/linyunping/article/details/79738324
+    init.sh
+
+    1.nginx
+        0.准备工作
+            1). yum update
+            2). yum install -y gcc gcc-c++
+                yum install -y pcre pcre-devel openssl openssl-devel zlib zlib-devel psmisc
+        1).添加专用分组和用户
+            groupadd www
+            useradd -g www www
+            vim /etc/passwd
+            然后找到有 www 那一行，把它修改为(后面由/bin/bash改为/sbin/nologin)：
+        2).选择目录下载编译文件,解压,编译,安装
+            官网下载(http://nginx.org/en/download.html) 或 wget http://182.150.63.148:8090/LNMP/nginx-1.12.2.tar.gz
+            tar zxf  nginx-1.12.2.tar.gz
+            cd nginx-1.12.2
+            ./configure --user=www --group=www --prefix=安装目录/nginx --with-http_stub_status_module --with-http_ssl_module --with-http_v2_module --with-http_gzip_static_module --with-ipv6 --with-http_sub_module --sbin-path=安装目录/nginx/sbin/nginx
+            make
+            make install
+        3).配置nginx
+            mv 安装目录/nginx/conf/nginx.conf{,.bak}
+            wget http://182.150.63.148:8090/tars/config/nginx.conf  -P 安装目录/nginx/conf/
+            wget http://182.150.63.148:8090/tars/config/enable-php.conf -P 安装目录/nginx/conf/
+            mkdir -pv 安装目录/nginx/conf/vhosts
+
+            支持php,在启动php-fpm之后修改
+            ######################################
+            location / {
+                index  index.html index.htm index.php;
+                #autoindex  on;
+            }
+            location ~ \.php(.*)$ {
+                fastcgi_pass   127.0.0.1:9000;
+                fastcgi_index  index.php;
+                fastcgi_split_path_info  ^((?U).+\.php)(/?.+)$;
+                fastcgi_param  SCRIPT_FILENAME  $document_root$fastcgi_script_name;
+                fastcgi_param  PATH_INFO  $fastcgi_path_info;
+                fastcgi_param  PATH_TRANSLATED  $document_root$fastcgi_path_info;
+                include        fastcgi_params;
+            }
+            ######################################
+        4).手动启动服务
+            安装目录/nginx/sbin/nginx
+            安装目录/nginx/sbin/nginx -s reload
+            安装目录/nginx/sbin/nginx -t
+            安装目录/nginx/sbin/nginx -t -s reload
+        5).开机启动添加
+            Centos 系统服务脚本目录：
+            用户（user）
+            用户登录后才能运行的程序，存在用户（user）
+            /usr/lib/systemd/
+            系统（system）
+            如需要开机没有登陆情况下就能运行的程序，存在系统服务（system）里
+            /lib/systemd/system/
+            服务以.service结尾。
+            vim /lib/systemd/system/nginx.service
+            ####################内容 start####################
+                [Unit]
+                Description=nginx
+                After=network.target
+                [Service]
+                Type=forking
+                ExecStart=/usr/local/nginx/sbin/nginx
+                ExecReload=/usr/local/nginx/sbin/nginx -s reload
+                ExecStop=/usr/local/nginx/sbin/nginx -s stop
+                PrivateTmp=true
+                [Install]
+                WantedBy=multi-user.target
+            ######################内容 end#####################
+            设置开机启动
+            systemctl enable nginx.service
+        6).查看nginx版本,测试
+            安装目录/nginx/sbin/nginx -v
+            curl localhost
+        7).查看进程
+            ps -ef | grep nginx
+        8).开启对外端口(centos7以上)
+            开启端口：
+            firewall-cmd --zone=public --add-port=80/tcp --permanent    （--permanent永久生效，没有此参数重启后失效）
+            重新载入
+            firewall-cmd --reload
+        9).配置虚拟域名,添加host
+            配置虚拟域名
+            #####################################################
+            server {
+                    listen       80;
+                    server_name  www.dy.cn dy.cn;
+                    root   /data/website;
+                    location / {
+                        index  index.html index.htm index.php;
+                        autoindex  on;
+                    }
+                    location ~ \.php(.*)$ {
+                        fastcgi_pass   127.0.0.1:9000;
+                        fastcgi_index  index.php;
+                        fastcgi_split_path_info  ^((?U).+\.php)(/?.+)$;
+                        fastcgi_param  SCRIPT_FILENAME  $document_root$fastcgi_script_name;
+                        fastcgi_param  PATH_INFO  $fastcgi_path_info;
+                        fastcgi_param  PATH_TRANSLATED  $document_root$fastcgi_path_info;
+                        include        fastcgi_params;
+                    }
+            }
+            #####################################################
+            添加host:vim /etc/hosts即可编辑
+        10).添加环境变量
+            # vim /etc/profile
+            在最后，添加:
+            export PATH="/data/webserver/nginx/sbin:$PATH" #添加的路径
+            保存，退出，然后运行：
+            #source /etc/profile
+            不报错则成功。
+        11).nginx管理的几种方式
+            # 启动Nginx
+            /usr/local/nginx/sbin/nginx
+            # 从容停止Nginx：
+            kill -QUIT 主进程号 # 如上一步中的 ps 命令输出的 29151，就是 Nginx的主进程号
+            # 快速停止Nginx：
+            kill -TERM 主进程号
+            # 强制停止Nginx：
+            pkill -9 nginx
+            # 平滑重启nginx
+            /usr/nginx/sbin/nginx -s reload
+    2.php
+        0).准备工作
+            yum -y install composer libjpeg-devel libxml2-devel libpng-devel freetype-devel curl-devel libicu-devel epel-release libmcrypt-devel libxslt libxslt-devel autoconf git supervisor openssh-clients  lftp lrzsz lftp telnet
+        1).选择目录下载编译文件,解压,编译,安装
+            A.wget -c http://cn2.php.net/distributions/php-7.1.3.tar.gz 或 http://cn2.php.net/distributions/php-7.2.9.tar.gz
+            B.tar zxf php-7.2.9.tar.gz
+            C.cd php-7.2.9
+            D.  ./configure    --prefix=安装目录/php   --with-config-file-path=安装目录/php/etc   --with-config-file-scan-dir=安装目录/php/conf.d   --enable-fpm   --with-fpm-user=www   --with-fpm-group=www   --enable-mysqlnd   --with-mysqli=mysqlnd   --with-pdo-mysql=mysqlnd   --with-iconv-dir   --with-freetype-dir=安装目录/freetype   --with-jpeg-dir   --with-png-dir   --with-zlib   --with-libxml-dir=/usr   --enable-xml   --disable-rpath   --enable-bcmath   --enable-shmop   --enable-sysvsem   --enable-inline-optimization   --with-curl   --enable-mbregex   --enable-mbstring   --enable-intl   --with-mcrypt   --enable-ftp   --with-gd   --enable-gd-native-ttf   --with-openssl   --with-mhash   --enable-pcntl   --enable-sockets   --with-xmlrpc   --enable-zip   --enable-soap   --with-gettext   --disable-fileinfo   --enable-opcache   --with-xsl
+            E.make && make install
+        2).查看版本
+            /usr/local/php7/bin/php -v
+        3).查看,修改配置
+            查看配置
+            /usr/local/php7/bin/php -i | grep php.ini
+            从解压缩文件夹复制
+            cp 安装目录/php/etc/php-fpm.conf.default 安装目录/php/etc/php-fpm.conf
+            cp 安装目录/php/etc/php-fpm.d/www.conf.default 安装目录/php/etc/php-fpm.d/www.conf
+            sed -i 's/user = nobody group = nobody/user = www group = www/' 安装目录/php/etc/php-fpm.d/www.conf
+            sed -i 's/;pid = run/pid = run/' 安装目录/php/etc/php-fpm.conf
+            cp 解压文件夹/php-7.2.9/php.ini-production 安装目录/php/etc/php.ini
+            cp 解压文件夹/php-7.2.9/sapi/fpm/init.d.php-fpm /etc/init.d/php-fpm
+            mv 安装目录/php/etc/php-fpm.conf{,.bak}
+            wget http://182.150.63.148:8090/tars/config/php-fpm.conf -P 安装目录/php/etc/
+            chmod 755 /etc/init.d/php-fpm
+            /etc/init.d/php-fpm start
+            rm -rf /usr/bin/php
+            cp 安装目录/php/bin/php /usr/bin/
+            安装目录/nginx/sbin/nginx -s reload
+            修改composer为国内源:composer config -g repo.packagist composer https://packagist.phpcomposer.com
+
+            nginx打开php文件报错:access denied解决
+            php.ini文件修改cgi.fix_pathinfo从0改为1(让php可以解析路径)
+        4).安装php-fpm,启动
+            chmod 755 /etc/init.d/php-fpm
+            /etc/init.d/php-fpm start
+            chkconfig --add php-fpm
+            chkconfig php-fpm on
+        5).查看进程
+            ps -ef | grep php-fpm
+        6).php-fpm管理
+            /etc/init.d/php-fpm start
+            /etc/init.d/php-fpm restart
+            /etc/init.d/php-fpm stop
+        7).安装扩展
+            -A.PECL
+                //php版本 > 7
+                $ wget http://pear.php.net/go-pear.phar
+                $ php go-pear.phar
+
+                //php版本 < 7
+                $ yum install php-pear
+                //否则会报错PHP Parse error:  syntax error, unexpected //'new' (T_NEW) in /usr/share/pear/PEAR/Frontend.php on //line 91
+            A.redis
+                a.进入预定目录,下载,解压,进入文件夹
+                wget https://codeload.github.com/phpredis/phpredis/zip/develop 或 https://github.com/phpredis/phpredis
+                unzip phpredis-develop.zip
+                cd phpredis-develop
+                b.生成configure配置文件
+                php安装目录/bin/phpize
+                c.编译安装
+                ./configure --with-php-config=php安装目录/bin/php-config(如果找不见php-config,则使用 find / -name 'php-config')
+                make && make install
+                d.配置php.ini
+                配置php.ini
+                在extension后添加
+                extension=redis.so
+                e.查看结果
+                重启php:/etc/init.d/php-fpm restart
+                检查:
+                [root@test etc]# /usr/local/php-7.1/bin/php -m|grep redis
+                redis
+                或直接看phpinfo.php查找redis
+            B.libxls
+                wget http://182.150.63.148:8090/tars/libxlsxwriter.tar.gz -P 解压目录
+                tar zxf 解压目录/libxlsxwriter.tar.gz -C 解压目录
+                cd 解压目录/libxlsxwriter
+                make && make install
+            C.php-excel#
+                wget http://182.150.63.148:8090/tars/php-ext-excel-export.tar.gz -P 解压目录
+                tar zxf 解压目录/php-ext-excel-export.tar.gz -C 解压目录
+                cd 解压目录/php-ext-excel-export
+                php安装目录/php/bin/phpize
+                ./configure --with-php-config=php安装目录/php/bin/php-config
+                make && make install
+            D.php-fileinfo
+                cd 解压目录/php-7.2.9/ext/fileinfo/
+                php安装目录/php/bin/phpize
+                ./configure --with-php-config=php安装目录/php/bin/php-config
+                make && make install
+            E.mongo
+                wget http://182.150.63.148:8090/tars/mongodb-1.3.4.tgz -P 解压目录
+                tar zxf 解压目录/mongodb-1.3.4.tgz  -C 解压目录
+                cd 解压目录/mongodb-1.3.4
+                php安装目录/php/bin/phpize
+                ./configure --with-php-config=php安装目录/php/bin/php-config
+                make && make install
+            F.ImageMagick
+                wget http://182.150.63.148:8090/tars/ImageMagick-7.0.7-21.tar.gz -P 解压目录
+                tar zxf 解压目录/ImageMagick-7.0.7-21.tar.gz -C 解压目录
+                cd 解压目录/ImageMagick-7.0.7-21
+                ./configure --prefix=$APPDIR/imagemagick
+                make && make install
+                wget http://182.150.63.148:8090/tars/imagick-3.4.3.tgz -P 解压目录
+                tar zxf 解压目录/imagick-3.4.3.tgz -C 解压目录
+                cd 解压目录/imagick-3.4.3
+                php安装目录/php/bin/phpize
+                ./configure --with-php-config=php安装目录/php/bin/php-config --with-imagick=$APPDIR/imagemagick
+                make && make install
+            G.swoole
+                A.方法一
+                pecl install swoole 或 /data/webserver/php/bin/pecl install swoole
+                B.方法二
+                wget -O swoole-src-4.2.1.tar.gz https://codeload.github.com/swoole/swoole-src/tar.gz/v4.2.1
+                tar zxf swoole-src-4.2.1.tar.gz
+                cd swoole-src-4.2.1
+                php安装目录/bin/phpize
+                ./configure --with-php-config=/data/webserver/php/bin/php-config
+                make clean
+                make && make install
+                C.添加扩展
+                php.ini添加extension=swoole.so
+                D.重启php-fpm
+                /etc/init.d/php-fpm restart
+            H.hiredis
+                wget https://github.com/redis/hiredis/archive/v0.13.3.zip 或 wget -O hiredis-0.13.3 https://github.com/redis/hiredis/releases
+                yum -y install unzip
+                unzip v0.13.3.zip
+                cd hiredis-0.13.3/
+                make && make install
+                ldconfig
+                #加php-fpm环境变量
+                vim /etc/profile
+                #最后一行加入
+                export PATH="$PATH:/data/webserver/php/sbin/:/data/webserver/php/bin/"
+                #重新设置环境变量
+                source /etc/profile
+                #查看环境变量是否成功
+                export
+                #启动异步redis客户端
+                重新编译安装swoole，在configure指令中加入--enable-async-redis
+                #重新安装swoole可能遇到的问题
+                php-m 发现swoole消失或者是通过php --ri swoole没有显示async redis client 或 redis client
+                vi ~/.bash_profile
+                在最后一行添加 export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/lib
+                source ~/.bash_profile
+                重新编译安装swoole即可
+                /etc/init.d/php-fpm restart
+                最好是重启一下服务器
+
+            mv php安装目录/php/etc/php.ini{,.bak}
+            wget http://182.150.63.148:8090/tars/config/php.ini -P  php安装目录/php/etc/
+            /etc/init.d/php-fpm restart
+    3.mysql
+        0).准备工作
+            yum -y install sysstat cmake flex bison autoconf gcc-c++ automake bzip2-devel ncurses-devel zlib-devel libjpeg-devel libpng-devel libtiff-devel freetype-devel libXpm-devel gettext-devel pam-devel libtool libtool-ltdl openssl openssl-devel fontconfig-devel libxml2-devel curl-devel libicu libicu-devel
+        1).添加专用分组和用户
+            groupadd mysql
+            /usr/sbin/useradd -r -g mysql -s /bin/false mysql
+        2).选择目录下载编译文件,解压,编译,安装
+            A.下载
+            官网下载(https://dev.mysql.com/downloads/mysql/5.7.html#downloads)(选择RedHat Enterprise Linux 7 / Oracle Linux 7 (Architecture Independent), RPM Package)
+            或 wget http://182.150.63.148:8090/LNMP/mysql-5.7.20.tar.gz -P 解压缩文件夹
+            或 wget http://repo.mysql.com//mysql57-community-release-el7-7.noarch.rpm
+            或 wget http://cdn.mysql.com//Downloads/MySQL-5.7/mysql-community-server-5.7.18-1.el7.x86_64.rpm
+            wget http://182.150.63.148:8090/LNMP/boost_1_59_0.tar.gz -P 解压缩文件夹
+            B.解压
+            tar zxf mysql-5.7.20.tar.gz -C 解压缩文件夹
+            tar zxf boost_1_59_0.tar.gz -C 解压缩文件夹
+            mkdir -pv 安装目录/{mysql,tmp_db,database}
+            C.编译&安装
+            mkdir -pv /var/lib/mysql
+            chown -R mysql:mysql /var/lib/mysql
+            chown -R mysql:mysql 安装目录/
+            cd 解压缩文件夹/mysql-5.7.20
+            cmake -DCMAKE_INSTALL_PREFIX=安装目录/mysql  -DMYSQL_DATADIR=安装目录/database -DMYSQL_UNIX_ADDR=/var/lib/mysql/mysql.sock -DDEFAULT_CHARSET=utf8 -DDEFAULT_COLLATION=utf8_general_ci -DMYSQL_TCP_PORT=3306 -DMYSQL_USER=mysql -DWITH_MYISAM_STORAGE_ENGINE=1 -DWITH_INNOBASE_STORAGE_ENGINE=1 -DWITH_ARCHIVE_STORAGE_ENGINE=1 -DWITH_BLACKHOLE_STORAGE_ENGINE=1 -DWITH_MEMORY_STORAGE_ENGINE=1 -DENABLE_DOWNLOADS=1 -DDOWNLOAD_BOOST=0 -DWITH_BOOST=解压缩文件夹/boost_1_59_0 -DSYSTEMD_PID_DIR=/var/run/mysql.pid -DSYSCONFDIR=/etc/my.cnf
+            make && make install
+            chmod 750 安装目录/database
+        3).初始化
+            安装目录/mysql/bin/mysqld --initialize --user=mysql
+            注意此处或给出默认登陆密码
+            cp 安装目录/mysql/bin/mysql /usr/sbin/
+            cp 解压缩文件夹/mysql-5.7.20/support-files/mysql.server /etc/init.d/mysqld
+            chmod +x /etc/init.d/mysqld
+            chkconfig --add mysqld
+            chkconfig mysqld on
+        4).修改配置
+            在安装目录下添加配置文件
+            ###############################################
+                [mysql]
+                # 设置mysql客户端默认字符集
+                default-character-set=utf8
+                [mysqld]
+                #设置3306端口
+                port = 3306
+                # 设置mysql的安装目录
+                basedir=/data/LPDB/mysql/
+                # 设置mysql数据库的数据的存放目录
+                datadir=/data/LPDB/database/
+                # 允许最大连接数
+                max_connections=200
+                # 服务端使用的字符集默认为8比特编码的latin1字符集
+                character-set-server=utf8
+                # 创建新表时将使用的默认存储引擎
+                default-storage-engine=INNODB
+
+                skip-grant-tables
+            ###############################################
+        5).启动
+            /etc/init.d/mysqld start
+        6).查找当前配置路径
+            # which mysqld
+            /usr/local/mysql/bin/mysqld
+            # /usr/local/mysql/bin/mysqld --verbose --help |grep -A 1 'Default options'
+            2016-06-02 16:49:39 0 [Note] /usr/local/mysql/bin/mysqld (mysqld 5.6.25-log) starting as process 8253 ...
+            2016-06-02 16:49:41 8253 [Note] Plugin 'FEDERATED' is disabled.
+            Default options are read from the following files in the given order: 默认的选项是按照给定的顺序读取从以下文件:
+            /etc/mysql/my.cnf /etc/my.cnf ~/.my.cnf
+        7).设置默认密码
+            在配置文件中添加配置项:skip-grant-tables(没有配置文件则在安装目录下创建my.cnf
+                ###############################################
+                    [mysql]
+                    # 设置mysql客户端默认字符集
+                    default-character-set=utf8
+                    [mysqld]
+                    #设置3306端口
+                    port = 3306
+                    # 设置mysql的安装目录
+                    basedir=/data/LPDB/mysql/
+                    # 设置mysql数据库的数据的存放目录
+                    datadir=/data/LPDB/database/
+                    # 允许最大连接数
+                    max_connections=200
+                    # 服务端使用的字符集默认为8比特编码的latin1字符集
+                    character-set-server=utf8
+                    # 创建新表时将使用的默认存储引擎
+                    default-storage-engine=INNODB
+
+                    skip-grant-tables
+                ###############################################
+                )
+            update mysql.user set authentication_string=password('root') where User='root' and Host='localhost';
+            flush privileges;
+            去掉skip-grant-tables配置项
+        8).初始化密码(报错:mac mysql error You must reset your password using ALTER USER statement before executing this statement.)
+            step 1: SET PASSWORD = PASSWORD('your new password');
+            step 2: ALTER USER 'root'@'localhost' PASSWORD EXPIRE NEVER;
+            step 3: flush privileges;
+        9).开启远程登陆
+            1. 打开/etc/mysql/mysql.conf.d/mysqld.cnf, 注掉 "bind-address = 127.0.0.1",
+            2. 重启mysql service "/etc/init.d/mysql restart"
+            3. 执行: mysql> GRANT ALL PRIVILEGES ON *.* TO 'USERNAME'@'%' IDENTIFIED BY 'PASSWORD' WITH GRANT OPTION;
+            注意: 这里的USERNAME是你的数据库账户，PASSWORD是你的数据库密码
+            例如: mysql> GRANT ALL PRIVILEGES ON *.* TO 'root'@'%' IDENTIFIED BY 'root' WITH GRANT OPTION;
+            4. 执行: mysql> flush privileges;
+            5. 退出mysql命令行，执行：　mysql -u root -h 192.168.0.1 -p
+        10).开启对外端口(centos7以上)
+            开启端口：
+            firewall-cmd --zone=public --add-port=3306/tcp --permanent    （--permanent永久生效，没有此参数重启后失效）
+            重新载入
+            firewall-cmd --reload
+        11).php-fpm管理
+            /etc/init.d/mysqld start
+            /etc/init.d/mysqld restart
+            /etc/init.d/mysqld stop

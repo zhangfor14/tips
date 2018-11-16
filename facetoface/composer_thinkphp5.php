@@ -26,6 +26,7 @@ B.php composer-setup.php//执行安装过程
 C.php -r "unlink('composer-setup.php';"//删除安装脚本
 D.已下载最新版本的 composer.phar 文件到当前目录
 //3.安装composer到全局
+php -r "readfile('https://getcomposer.org/installer');" | php
 A.进入 PHP 的安装目录
 B.将 composer.phar 复制到 PHP 的安装目录下面，也就是和 php.exe 在同一级目录
 C.在 PHP 安装目录下新建一个 composer.bat 文件，并将下列代码保存到此文件中
